@@ -30,7 +30,7 @@ class NewVisitorTest(unittest.TestCase):
         #  Она видит, что заголовок и шапка страницы говорят о
         #  списках неотложных дел.
 
-        self.assertIn("To-Do", self.driver.find_element(By.CSS_SELECTOR, 'a[class="logo"]').text)
+        self.assertIn("To-Do", self.driver.find_element(By.XPATH, '/html/body/logo').text)
         self.fail("Закончить тест!")
 
         # Ей сразу предлагается ввести элемент списка
