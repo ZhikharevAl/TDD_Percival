@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from packaging import version
+from selenium.webdriver.common.keys import Keys
 
 
 class NewVisitorTest(unittest.TestCase):
@@ -31,16 +32,29 @@ class NewVisitorTest(unittest.TestCase):
         #  списках неотложных дел.
 
         self.assertIn("To-Do", self.driver.find_element(By.XPATH, '/html/body/logo').text)
-        self.fail("Закончить тест!")
 
         # Ей сразу предлагается ввести элемент списка
+        inputbox = self.driver.find_element(By.ID, 'css_selector')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'),
+            "Enter a to-do item"
+        )
         # Она набирает в текстовом поле "Купить павлиньи перья" (ее хобби –
         # вязание рыболовных мушек)
+        inputbox.send_keys("Купить павлинья перья")
         # Когда она нажимает enter, страница обновляется, и теперь страница
         # содержит "1: Купить павлиньи перья" в качестве элемента списка
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+        table = self.driver.find_element(By.ID, '//*[@id="id_list_name_0"]')
+        rows = table.find_elements(By.TAG_NAME, "tr")
+        self.assertTrue(
+            any(row.text == "1: Купить павлиньи перья" for row in rows)
+            )
         # Текстовое поле по-прежнему приглашает ее добавить еще один элемент.
         # Она вводит "Сделать мушку из павлиньих перьев"
         # (Эдит очень методична)
+        self.fail("Закончить тест!")
         # Страница снова обновляется, и теперь показывает оба элемента ее списка
         # Эдит интересно, запомнит ли сайт ее список. Далее она видит, что
         # сайт сгенерировал для нее уникальный URL-адрес – об этом
