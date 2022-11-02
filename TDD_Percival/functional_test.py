@@ -34,7 +34,7 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn("To-Do", self.driver.find_element(By.XPATH, '/html/body/logo').text)
 
         # Ей сразу предлагается ввести элемент списка
-        inputbox = self.driver.find_element(By.ID, 'css_selector')
+        inputbox = self.driver.find_element(By.CSS_SELECTOR, "#id_new_item")
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             "Enter a to-do item"
@@ -46,11 +46,13 @@ class NewVisitorTest(unittest.TestCase):
         # содержит "1: Купить павлиньи перья" в качестве элемента списка
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-        table = self.driver.find_element(By.ID, '//*[@id="id_list_name_0"]')
+        table = self.driver.find_element(By.CSS_SELECTOR, "#id_list_table")
         rows = table.find_elements(By.TAG_NAME, "tr")
         self.assertTrue(
-            any(row.text == "1: Купить павлиньи перья" for row in rows)
-            )
+            any(row.text == '1: Купить павлиньи перья' for row in rows),
+            "Новый элемент списка не появился в таблице"
+        )
+
         # Текстовое поле по-прежнему приглашает ее добавить еще один элемент.
         # Она вводит "Сделать мушку из павлиньих перьев"
         # (Эдит очень методична)
