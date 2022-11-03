@@ -31,36 +31,48 @@ class NewVisitorTest(unittest.TestCase):
         #  Она видит, что заголовок и шапка страницы говорят о
         #  списках неотложных дел.
 
-        self.assertIn("To-Do", self.driver.find_element(By.XPATH, '/html/body/logo').text)
+        # self.assertIn("To-Do", self.driver.find_element(By.XPATH, '/html/body/logo').text)
 
         # Ей сразу предлагается ввести элемент списка
-        inputbox = self.driver.find_element(By.CSS_SELECTOR, "#id_new_item")
+        inputbox = self.driver.find_element(By.CSS_SELECTOR, "input[id='id_new_item']")
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             "Enter a to-do item"
         )
         # Она набирает в текстовом поле "Купить павлиньи перья" (ее хобби –
         # вязание рыболовных мушек)
-        inputbox.send_keys("Купить павлинья перья")
+        inputbox.send_keys("Купить павлиньи перья")
         # Когда она нажимает enter, страница обновляется, и теперь страница
         # содержит "1: Купить павлиньи перья" в качестве элемента списка
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
-        table = self.driver.find_element(By.CSS_SELECTOR, "#id_list_table")
-        rows = table.find_elements(By.TAG_NAME, "tr")
-        self.assertTrue(
-            any(row.text == '1: Купить павлиньи перья' for row in rows),
-            "Новый элемент списка не появился в таблице"
-        )
+        time.sleep(10)
+        table = self.driver.find_element(By.CSS_SELECTOR, "table[id='id_list_table']")
+        rows = table.find_elements(By.XPATH, "//tbody/tr")
+        # rows = table.find_elements(By.TAG_NAME, "tr")
+
+        self.assertIn('1: Купить павлиньи перья', [row.text for row in rows])
+        # self.assertTrue(
+        #     any(row.text == '1: Купить павлиньи перья' for row in rows),
+        #     f"Новый элемент списка не появился в таблице. Содержимым было:\
+        # n{table.text}"
+        # )
 
         # Текстовое поле по-прежнему приглашает ее добавить еще один элемент.
         # Она вводит "Сделать мушку из павлиньих перьев"
+        inputbox = self.driver.find_element(By.CSS_SELECTOR, "input[id='id_new_item']")
+        inputbox.send_keys("Сделать мушку из павлиньих перьев")
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
         # (Эдит очень методична)
-        self.fail("Закончить тест!")
         # Страница снова обновляется, и теперь показывает оба элемента ее списка
+        table = self.driver.find_element(By.CSS_SELECTOR, "table[id='id_list_table']")
+        rows = table.find_elements(By.XPATH, "//tbody/tr")
+        self.assertIn("2: Сделать мушку из павлиньих перьев", [row.text for row in rows])
+
         # Эдит интересно, запомнит ли сайт ее список. Далее она видит, что
         # сайт сгенерировал для нее уникальный URL-адрес – об этом
         # выводится небольшой текст с объяснениями.
+        self.fail("Finish the test!")
         # Она посещает этот URL-адрес – ее список по-прежнему там.
         # Удовлетворенная, она снова ложится спать.
 
