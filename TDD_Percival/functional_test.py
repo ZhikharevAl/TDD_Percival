@@ -69,6 +69,12 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements(By.XPATH, "//tbody/tr")
         self.assertIn("2: Сделать мушку из павлиньих перьев", [row.text for row in rows])
 
+        self.check_list_items()
+
+
+        # self.check_for_row_in_list_table('1: Купить павлиньи перья')
+        # self.check_for_row_in_list_table('2: Сделать мушку из павлиньих перьев')
+
         # Эдит интересно, запомнит ли сайт ее список. Далее она видит, что
         # сайт сгенерировал для нее уникальный URL-адрес – об этом
         # выводится небольшой текст с объяснениями.
