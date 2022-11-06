@@ -69,7 +69,7 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements(By.XPATH, "//tbody/tr")
         self.assertIn("2: Сделать мушку из павлиньих перьев", [row.text for row in rows])
 
-        self.check_list_items()
+        #self.check_list_items()
 
 
         # self.check_for_row_in_list_table('1: Купить павлиньи перья')
