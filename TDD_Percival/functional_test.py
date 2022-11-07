@@ -45,7 +45,6 @@ class NewVisitorTest(unittest.TestCase):
         # Когда она нажимает enter, страница обновляется, и теперь страница
         # содержит "1: Купить павлиньи перья" в качестве элемента списка
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(10)
         table = self.driver.find_element(By.CSS_SELECTOR, "table[id='id_list_table']")
         rows = table.find_elements(By.XPATH, "//tbody/tr")
         # rows = table.find_elements(By.TAG_NAME, "tr")
@@ -62,7 +61,6 @@ class NewVisitorTest(unittest.TestCase):
         inputbox = self.driver.find_element(By.CSS_SELECTOR, "input[id='id_new_item']")
         inputbox.send_keys("Сделать мушку из павлиньих перьев")
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
         # (Эдит очень методична)
         # Страница снова обновляется, и теперь показывает оба элемента ее списка
         table = self.driver.find_element(By.CSS_SELECTOR, "table[id='id_list_table']")
