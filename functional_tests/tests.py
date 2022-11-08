@@ -1,13 +1,14 @@
-import time
 import unittest
+import time
+from django.test import LiveServerTestCase
+from django.urls import reverse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
-from packaging import version
 from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     """Тест нового посетителя"""
 
     def setUp(self):
@@ -25,8 +26,10 @@ class NewVisitorTest(unittest.TestCase):
         # Эдит слышала про крутое новое онлайн-приложение со списком
         # неотложных дел. Она решает оценить его домашнюю страницу.
 
-        base_url = "http://127.0.0.1:8000/"
-        self.driver.get(base_url)
+        self.driver.get(self.live_server_url)
+
+        # base_url = "http://127.0.0.1:8000/"
+        # self.driver.get(base_url)
 
         #  Она видит, что заголовок и шапка страницы говорят о
         #  списках неотложных дел.
@@ -81,5 +84,5 @@ class NewVisitorTest(unittest.TestCase):
         # Удовлетворенная, она снова ложится спать.
 
 
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
+# if __name__ == '__main__':
+#     unittest.main(warnings='ignore')
