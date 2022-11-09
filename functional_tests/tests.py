@@ -6,8 +6,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import WebDriverException
 
-
+MAX_WAIT = 10
 class NewVisitorTest(LiveServerTestCase):
     """Тест нового посетителя"""
 
@@ -28,13 +29,10 @@ class NewVisitorTest(LiveServerTestCase):
 
         self.driver.get(self.live_server_url)
 
-        # base_url = "http://127.0.0.1:8000/"
-        # self.driver.get(base_url)
 
         #  Она видит, что заголовок и шапка страницы говорят о
         #  списках неотложных дел.
 
-        # self.assertIn("To-Do", self.driver.find_element(By.XPATH, '/html/body/logo').text)
 
         # Ей сразу предлагается ввести элемент списка
         inputbox = self.driver.find_element(By.CSS_SELECTOR, "input[id='id_new_item']")
@@ -50,14 +48,9 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         table = self.driver.find_element(By.CSS_SELECTOR, "table[id='id_list_table']")
         rows = table.find_elements(By.XPATH, "//tbody/tr")
-        # rows = table.find_elements(By.TAG_NAME, "tr")
+        self.wait_for_row_in_list_table('1: Купить павлиньи перья')
 
         self.assertIn('1: Купить павлиньи перья', [row.text for row in rows])
-        # self.assertTrue(
-        #     any(row.text == '1: Купить павлиньи перья' for row in rows),
-        #     f"Новый элемент списка не появился в таблице. Содержимым было:\
-        # n{table.text}"
-        # )
 
         # Текстовое поле по-прежнему приглашает ее добавить еще один элемент.
         # Она вводит "Сделать мушку из павлиньих перьев"
@@ -68,13 +61,9 @@ class NewVisitorTest(LiveServerTestCase):
         # Страница снова обновляется, и теперь показывает оба элемента ее списка
         table = self.driver.find_element(By.CSS_SELECTOR, "table[id='id_list_table']")
         rows = table.find_elements(By.XPATH, "//tbody/tr")
-        self.assertIn("2: Сделать мушку из павлиньих перьев", [row.text for row in rows])
+        self.wait_for_row_in_list_table('2: Сделать мушку из павлиньих перьев')
+        self.wait_for_row_in_list_table('1: Купить павлиньи перья')
 
-        #self.check_list_items()
-
-
-        # self.check_for_row_in_list_table('1: Купить павлиньи перья')
-        # self.check_for_row_in_list_table('2: Сделать мушку из павлиньих перьев')
 
         # Эдит интересно, запомнит ли сайт ее список. Далее она видит, что
         # сайт сгенерировал для нее уникальный URL-адрес – об этом
@@ -82,6 +71,22 @@ class NewVisitorTest(LiveServerTestCase):
         self.fail("Finish the test!")
         # Она посещает этот URL-адрес – ее список по-прежнему там.
         # Удовлетворенная, она снова ложится спать.
+
+    def wait_for_row_in_list_table(self, row_text):
+        """Ожидать строку в таблице списка"""
+        start_time = time.time()
+        while True:
+            try:
+                table = self.driver.find_element(By.ID, 'id_list_table')
+                rows = table.find_elements(By.XPATH, "//tbody/tr")
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+
+                    raise e
+                time.sleep(0.5)
+
 
 
 # if __name__ == '__main__':
